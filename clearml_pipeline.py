@@ -72,7 +72,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     predict_rf = rf_model.predict(X_test)
     print("predict_rf", predict_rf)
     accuracy_rf = accuracy_score(y_test, predict_rf)
-    logger.report_single_value(name="Random Forest Accuracy", value=accuracy_rf)
+    Logger.current_logger().report_single_value(name="Random Forest Accuracy", value=accuracy_rf)
     precision_rf = precision_score(y_test, predict_rf)
     recall_rf = recall_score(y_test, predict_rf)
     f1_rf = f1_score(y_test, predict_rf)
