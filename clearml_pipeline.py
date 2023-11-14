@@ -2,15 +2,11 @@ from clearml import PipelineController
 # import pip_system_certs
 from clearml.automation.controller import PipelineDecorator
 
-@PipelineDecorator.component(return_values=['dataframe'], cache=True)
+@PipelineDecorator.component(return_values=['dataframe'])
 def preprocessing():
     import pandas as pd
-    from clearml import Task, Dataset
 
-    dataset = Dataset.get(dataset_name="Raw_Data",
-                          dataset_project="UpSell-Dataset")
-
-    train = pd.read_csv(dataset)
+    train = pd.read_csv("dataset/Raw_Data.csv")
     print("Preprocessing..")
 
     print(train.head())
@@ -164,14 +160,14 @@ def preprocessing():
     train['binn_policy_sales_channel'] = train['binn_policy_sales_channel'].map(
         {'15-20': "A", 'less than 5': "B", "20-25 ": "C", "greater than 25": "D", "10-15": "E", "5-10": "F"})
     train['binn_region_code'] = train['binn_region_code'].map(
-        {'5-10': "A", 'greter than 15': "B", "10-15": "C", "less than 5": "D"})
+        {'5-10': "A", 'greater than 15': "B", "10-15": "C", "less than 5": "D"})
     train['Vehicle_Age'] = train['Vehicle_Age'].map({'1-2 Year': "A", "< 1 Year": "B", "> 2 Years": "C"})
 
     new_df = pd.get_dummies(train, drop_first=True)
 
     return new_df
 
-@PipelineDecorator.component(return_values=['accuracy','precision','recall','f1'], cache=True)
+@PipelineDecorator.component(return_values=['accuracy','precision','recall','f1'])
 def xgboost_train():
     print("<<<<<<<<<<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>>>>>")
     import pandas as pd
@@ -220,7 +216,7 @@ def xgboost_train():
     print("Completed")
     return accuracy, precision, recall, f1
 
-@PipelineDecorator.component(return_values=['accuracy','precision','recall','f1'], cache=True)
+@PipelineDecorator.component(return_values=['accuracy','precision','recall','f1'])
 def rf_train():
     import pandas as pd
     from sklearn import metrics
@@ -297,7 +293,7 @@ def prediction():
 def executing_pipeline(mock_parameter="mock"):
     print(mock_parameter)
 
-    # Use the pipeline argument to start the pipeline and pass it ot the first step
+    # Use the pipeline argument to start the pipeline and pass it to the first step
     print("launch step one")
     accuracy, precision, recall, f1 = prediction()
 
