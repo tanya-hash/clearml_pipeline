@@ -81,7 +81,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     f1_rf = f1_score(y_test, predict_rf)
     Logger.current_logger().report_single_value(name="Random Forest F1", value=f1_rf)
 
-    cm = metrics.confusion_matrix(y_val, predict)
+    cm = metrics.confusion_matrix(y_test, predict_rf)
     Logger.current_logger().report_confusion_matrix(
     "Random Forest",
     matrix=cm,
