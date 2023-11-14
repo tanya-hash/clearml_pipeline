@@ -67,12 +67,12 @@ def rf_train():
 @PipelineDecorator.component(return_values=["accuracy_xgb","accuracy_rf"], cache=True, task_type=TaskTypes.qc)
 def inference(rf_model, xgb_model, X_test, y_test):
     from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, roc_curve, f1_score
-    from clearml import task
+    from clearml import task, Logger
 
     predict_rf = rf_model.predict(X_test)
     print("predict_rf", predict_rf)
     accuracy_rf = accuracy_score(y_test, predict_rf)
-    task.get_logger().report_single_value(name="Accuracy", value=accuracy_rf)
+    logger.report_single_value(name="Random Forest Accuracy", value=accuracy_rf)
     precision_rf = precision_score(y_test, predict_rf)
     recall_rf = recall_score(y_test, predict_rf)
     f1_rf = f1_score(y_test, predict_rf)
