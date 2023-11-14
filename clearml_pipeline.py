@@ -43,7 +43,7 @@ if __name__ == '__main__':
         )
         print(">>>>>>>pipeline controller ended>>>>>>>>>>>>>>>>>>")
         # set the default execution queue to be used (per step we can override the execution)
-        pipe.set_default_execution_queue('default')
+        pipe.set_default_execution_queue('clearml-demo')
 
         print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Starting Task 1")
 
