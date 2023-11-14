@@ -91,9 +91,9 @@ def inference(rf_model, xgb_model, X_test, y_test):
     yaxis="True",
 )
 
-    xg_probs = xgb_model.predict_proba(X_test)[:, 1]
-    roc_value = roc_auc_score(y_test, xg_probs)
-    fpr, tpr, thresholds = roc_curve(y_test, xg_probs)
+    rf_probs = rf_model.predict_proba(X_test)[:, 1]
+    roc_value = roc_auc_score(y_test, rf_probs)
+    fpr, tpr, thresholds = roc_curve(y_test, rf_probs)
     plt.figure()
     plot = plt.plot(fpr, tpr, label=' (area = %0.2f)' % roc_value)
     plt.plot([0, 1], [0, 1],'r--')
