@@ -69,6 +69,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     from sklearn import metrics
     from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, roc_curve, f1_score
     from clearml import task, Logger
+    import matplotlib.pyplot as plt
 
     predict_rf = rf_model.predict(X_test)
     print("predict_rf", predict_rf)
@@ -88,6 +89,26 @@ def inference(rf_model, xgb_model, X_test, y_test):
     matrix=cm,
     xaxis="Predicted",
     yaxis="True",
+)
+
+    xg_probs = xgb_model.predict_proba(X_test)[:, 1]
+    roc_value = roc_auc_score(y_test, xg_probs)
+    fpr, tpr, thresholds = roc_curve(y_test, xg_probs)
+    plt.figure()
+    plot = plt.plot(fpr, tpr, label=' (area = %0.2f)' % roc_value)
+    plt.plot([0, 1], [0, 1],'r--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title(' RF  ROC Curve')
+    plt.legend(loc="lower right")
+    # plt.show()
+    Logger.current_logger().report_matplotlib_figure(
+    title="Random Forest ROC",
+    series="ignored",
+    figure=plot,
+    report_interactive=True,
 )
 
     predict_xgb = xgb_model.predict(X_test)
