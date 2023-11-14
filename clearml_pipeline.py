@@ -8,9 +8,6 @@ def xgboost_train():
     print("<<<<<<<<<<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>>>>>")
     import pandas as pd
     from xgboost import XGBClassifier
-    # from sklearn import metrics
-    # from sklearn.metrics import accuracy_score
-    # from sklearn.metrics import precision_score, recall_score, roc_curve, f1_score, roc_auc_score
     from sklearn.model_selection import train_test_split
     import joblib
     from sklearn.utils import class_weight
@@ -33,32 +30,14 @@ def xgboost_train():
     # params = xgb.get_params()
     xgb.fit(X_train, y_train, sample_weight=classes_weights)
     joblib.dump(xgb, "xgb_model.pkl")
-    # predict = xgb.predict(X_val)
-
-    # accuracy = accuracy_score(y_val, predict)
-    # precision = precision_score(y_val, predict)
-    # recall = recall_score(y_val, predict)
-    # f1 = f1_score(y_val, predict)
-    #
-    # cm = metrics.confusion_matrix(y_val, predict)
-    # print(cm)
-    #
-    #
-    # xg_probs = xgb.predict_proba(X_val)[:, 1]
-    # roc_value = roc_auc_score(y_val, xg_probs)
-    # fpr, tpr, thresholds = roc_curve(y_val, xg_probs)
-    #
-    print("Completed")
+    print("Completed XGB Training")
     return xgb
 
 @PipelineDecorator.component(return_values=['rf_model','X_test','y_test'], cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev")
 def rf_train():
     print("<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>")
     import pandas as pd
-    # from sklearn import metrics
     from sklearn.ensemble import RandomForestClassifier
-    # from sklearn.metrics import accuracy_score, roc_auc_score
-    # from sklearn.metrics import precision_score, recall_score, roc_curve, f1_score
     from sklearn.model_selection import train_test_split
     import joblib
 
@@ -80,36 +59,29 @@ def rf_train():
                                       n_estimators=500, random_state=0)
 
     print("<<<<<<<<<<<< Training >>>>>>>>>>>>>>>>>>>")
-    # params = rf_model.get_params()
     rf_model.fit(X_train, y_train)
     joblib.dump(rf_model, "RF_model.pkl")
-    # predict = rf_model.predict(X_val)
-    #
-    # accuracy = accuracy_score(y_val, predict)
-    # precision = precision_score(y_val, predict)
-    # recall = recall_score(y_val, predict)
-    # f1 = f1_score(y_val, predict)
-    #
-    # cm = metrics.confusion_matrix(y_val, predict)
-    # print(cm)
-    #
-    # rf_probs = rf_model.predict_proba(X_val)[:, 1]
-    # roc_value = roc_auc_score(y_val, rf_probs)
-    # fpr, tpr, thresholds = roc_curve(y_val, rf_probs)
-
-    print("Completed")
+    print("Completed Random Forest")
     return rf_model, X_test, y_test
 
 @PipelineDecorator.component(return_values=["accuracy_xgb","accuracy_rf"], cache=True, task_type=TaskTypes.qc)
 def inference(rf_model, xgb_model, X_test, y_test):
-    # from sklearn.linear_model import LogisticRegression  # noqa
-    from sklearn.metrics import accuracy_score
+    from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, roc_curve, f1_score
+    from clearml import task
+
     predict_rf = rf_model.predict(X_test)
     print("predict_rf", predict_rf)
     accuracy_rf = accuracy_score(y_test, predict_rf)
+    task.get_logger().report_single_value(name="Accuracy", value=accuracy_rf)
+    precision_rf = precision_score(y_test, predict_rf)
+    recall_rf = recall_score(y_test, predict_rf)
+    f1_rf = f1_score(y_test, predict_rf)
 
     predict_xgb = xgb_model.predict(X_test)
     accuracy_xgb = accuracy_score(y_test, predict_xgb)
+    precision_xgb = precision_score(y_test, predict_xgb)
+    recall_xgb = recall_score(y_test, predict_xgb)
+    f1_xgb = f1_score(y_test, predict_xgb)
 
     print("accuracies",accuracy_xgb, accuracy_rf)
 
