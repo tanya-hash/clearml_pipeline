@@ -66,6 +66,7 @@ def rf_train():
 
 @PipelineDecorator.component(return_values=["accuracy_xgb","accuracy_rf"], cache=True, task_type=TaskTypes.qc)
 def inference(rf_model, xgb_model, X_test, y_test):
+    from sklearn import metrics
     from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, roc_curve, f1_score
     from clearml import task, Logger
 
@@ -79,6 +80,14 @@ def inference(rf_model, xgb_model, X_test, y_test):
     Logger.current_logger().report_single_value(name="Random Forest Recall", value=recall_rf)
     f1_rf = f1_score(y_test, predict_rf)
     Logger.current_logger().report_single_value(name="Random Forest F1", value=f1_rf)
+
+    cm = metrics.confusion_matrix(y_val, predict)
+    Logger.current_logger().report_confusion_matrix(
+    "Random Forest",
+    matrix=cm,
+    xaxis="Predicted",
+    yaxis="True",
+)
 
     predict_xgb = xgb_model.predict(X_test)
     accuracy_xgb = accuracy_score(y_test, predict_xgb)
