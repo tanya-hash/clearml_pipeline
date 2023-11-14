@@ -74,14 +74,21 @@ def inference(rf_model, xgb_model, X_test, y_test):
     accuracy_rf = accuracy_score(y_test, predict_rf)
     Logger.current_logger().report_single_value(name="Random Forest Accuracy", value=accuracy_rf)
     precision_rf = precision_score(y_test, predict_rf)
+    Logger.current_logger().report_single_value(name="Random Forest Precision", value=precision_rf)
     recall_rf = recall_score(y_test, predict_rf)
+    Logger.current_logger().report_single_value(name="Random Forest Recall", value=recall_rf)
     f1_rf = f1_score(y_test, predict_rf)
+    Logger.current_logger().report_single_value(name="Random Forest F1", value=f1_rf)
 
     predict_xgb = xgb_model.predict(X_test)
     accuracy_xgb = accuracy_score(y_test, predict_xgb)
+    Logger.current_logger().report_single_value(name="XGBoost Accuracy", value=accuracy_xgb)
     precision_xgb = precision_score(y_test, predict_xgb)
+    Logger.current_logger().report_single_value(name="XGBoost Precision", value=precision_xgb)
     recall_xgb = recall_score(y_test, predict_xgb)
+    Logger.current_logger().report_single_value(name="XGBoost Recall", value=recall_xgb)
     f1_xgb = f1_score(y_test, predict_xgb)
+    Logger.current_logger().report_single_value(name="XGBoost F1", value=f1_xgb)
 
     print("accuracies",accuracy_xgb, accuracy_rf)
 
