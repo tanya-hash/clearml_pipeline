@@ -100,6 +100,15 @@ def inference(rf_model, xgb_model, X_test, y_test):
     f1_xgb = f1_score(y_test, predict_xgb)
     Logger.current_logger().report_single_value(name="XGBoost F1", value=f1_xgb)
 
+    cm = metrics.confusion_matrix(y_test, predict_xgb)
+    Logger.current_logger().report_confusion_matrix(
+    "XGBoost",
+    "ignored",
+    matrix=cm,
+    xaxis="Predicted",
+    yaxis="True",
+)
+
     print("accuracies",accuracy_xgb, accuracy_rf)
 
     return accuracy_xgb,accuracy_rf
