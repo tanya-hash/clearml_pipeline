@@ -103,7 +103,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     plt.ylabel('True Positive Rate')
     plt.title(' RF  ROC Curve')
     plt.legend(loc="lower right")
-    # plt.show()
+    plt.show(block=False)
     Logger.current_logger().report_matplotlib_figure(
     title="Random Forest ROC",
     series="ignored",
