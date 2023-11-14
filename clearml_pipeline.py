@@ -84,6 +84,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     cm = metrics.confusion_matrix(y_test, predict_rf)
     Logger.current_logger().report_confusion_matrix(
     "Random Forest",
+    "ignored",
     matrix=cm,
     xaxis="Predicted",
     yaxis="True",
