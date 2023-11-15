@@ -377,11 +377,8 @@ if __name__ == "__main__":
     PipelineDecorator.set_default_execution_queue('clearml-demo')
     PipelineDecorator.debug_pipeline()
     
-    PipelineDecorator.add_function_step(
-        name='preprocessing',
-        function=preprocessing,
-        function_return=['data_frame'],
-        cache_executed_step=True,
+    PipelineDecorator.add_step(
+        name='preprocessing'
     )
     
     executing_pipeline()
