@@ -358,19 +358,22 @@ if __name__ == "__main__":
         name='Upsell_CrossSell_pipeline',
         version='1.1',
         add_pipeline_tags=False,
+        repo="https://github.com/tanya-hash/clearml_pipeline.git",
+        repo_branch="master",
+        always_create_from_code=True
     )
 
-     # set the default execution queue to be used (per step we can override the execution)
+    # set the default execution queue to be used (per step we can override the execution)
     pipe.set_default_execution_queue('clearml-demo')
 
     pipe.add_function_step(
         name='preprocessing',
         function=preprocessing,
-        # function_kwargs=dict(pickle_data_url='${pipeline.url}'),
         function_return=['data_frame'],
         cache_executed_step=True,
         execution_queue="clearml-demo"
     )
+    
     pipe.add_function_step(
         name='xgboost_train',
         parents=['preprocessing'],
@@ -380,6 +383,7 @@ if __name__ == "__main__":
         cache_executed_step=True,
         execution_queue="clearml-demo"
     )
+    
     pipe.add_function_step(
         name='rf_train',
         parents=['preprocessing'],  # the pipeline will automatically detect the dependencies based on the kwargs inputs
@@ -399,8 +403,6 @@ if __name__ == "__main__":
         cache_executed_step=True,
         execution_queue="clearml-demo"
     )
-
-    PipelineController.enqueue(pipe, queue_name="clearml-demo")
 
     # Start the pipeline on the services queue (remote machine, default on the clearml-server)
     pipe.start(queue="clearml-demo")
