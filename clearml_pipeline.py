@@ -61,29 +61,32 @@ def preprocessing():
     for col in num_cols:
         replace_with_thresholds(train, col)
 
-    plot = sns.countplot(train.Gender)
+    plot_gender = sns.countplot(train.Gender)
+    plt.title("Gender and Response")
     plt.show(block=False)
     Logger.current_logger().report_matplotlib_figure(title="Gender and Reponse",
     series="ignored",
-    figure=plot,
+    figure=plot_gender,
     report_interactive=True,
 )
     
     df = train.groupby(['Vehicle_Age','Response'])['id'].count().to_frame().rename(columns={'id':'count'}).reset_index()
-    plot = sns.catplot(x="Vehicle_Age", y="count",col="Response",data=df, kind="bar",height=4, aspect=.7)
+    plot_age = sns.catplot(x="Vehicle_Age", y="count",col="Response",data=df, kind="bar",height=4, aspect=.7)
+    plt.title("Vehicle Age and Response")
     plt.show(block=False)
     Logger.current_logger().report_matplotlib_figure(title="Vehicle Age and Reponse",
     series="ignored",
-    figure=plot,
+    figure=plot_age,
     report_interactive=True,
 )
     
     df = train.groupby(['Vehicle_Damage','Response'])['id'].count().to_frame().rename(columns={'id':'count'}).reset_index()
-    plot = sns.catplot(x="Vehicle_Damage", y="count",col="Response", data=df, kind="bar",height=4, aspect=.7)
+    plot_damage = sns.catplot(x="Vehicle_Damage", y="count",col="Response", data=df, kind="bar",height=4, aspect=.7)
+    plt.title("Vehicle Damage and Response)
     plt.show(block=False)
     Logger.current_logger().report_matplotlib_figure(title="Vehicle Damage and Response",
     series="ignored",
-    figure=plot,
+    figure=plot_damage,
     report_interactive=True,
 )
 
@@ -335,7 +338,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     plt.ylim([0.0, 1.05])
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.title(' RF  ROC Curve')
+    plt.title(' XGB  ROC Curve')
     plt.legend(loc="lower right")
     plt.show(block=False)
     Logger.current_logger().report_matplotlib_figure(
