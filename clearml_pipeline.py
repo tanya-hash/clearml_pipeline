@@ -336,6 +336,7 @@ def executing_pipeline(mock_parameter="mock", xgb_model=None, rf_model=None):
 
     print("<<<<<launch step four>>>>>>")
     accuracy_xgb, accuracy_rf = inference(rf_model,xgb_model, X_test, y_test)
+    
 
 if __name__ == "__main__":
     # set the pipeline steps default execution queue (per specific step we can override it with the decorator)
