@@ -360,7 +360,6 @@ if __name__ == "__main__":
         add_pipeline_tags=False,
         repo="https://github.com/tanya-hash/clearml_pipeline.git",
         repo_branch="master",
-        always_create_from_code=True
     )
 
     # set the default execution queue to be used (per step we can override the execution)
