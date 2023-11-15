@@ -230,6 +230,7 @@ def xgboost_train(new_df):
     joblib.dump(xgb, "xgb_model.pkl")
     print("Completed XGB Training")
     return xgb
+@PipelineDecorator.add_function_step(xgboost_train, function_return=["xgb"])
 
 @PipelineDecorator.component(return_values=['rf_model','X_test','y_test'], cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev")
 def rf_train(new_df):
