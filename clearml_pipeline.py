@@ -6,6 +6,7 @@ from clearml.automation.controller import PipelineDecorator
 @PipelineDecorator.component(return_values=['dataframe'], task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev")
 def preprocessing():
     import pandas as pd
+    import seaborn as sns
 
     train = pd.read_csv("dataset/Raw_Data.csv")
     print("Preprocessing..")
