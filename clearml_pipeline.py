@@ -400,6 +400,8 @@ if __name__ == "__main__":
         execution_queue="clearml-demo"
     )
 
+    enqueue(pipeline_controller, queue_name="clearml-demo")
+
     # Start the pipeline on the services queue (remote machine, default on the clearml-server)
     pipe.start(queue="clearml-demo")
 
