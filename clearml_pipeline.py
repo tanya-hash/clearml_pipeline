@@ -61,7 +61,7 @@ def preprocessing():
         replace_with_thresholds(train, col)
 
     plot = sns.countplot(train.Gender)
-    plt.show(block=Flase)
+    plt.show(block=False)
     Logger.current_logger().report_matplotlib_figure("Gender and Response",plot,report_image=False,report_interactive=True)
     
     df = train.groupby(['Vehicle_Age','Response'])['id'].count().to_frame().rename(columns={'id':'count'}).reset_index()
