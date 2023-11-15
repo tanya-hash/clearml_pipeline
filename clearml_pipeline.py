@@ -377,7 +377,7 @@ if __name__ == "__main__":
     PipelineDecorator.set_default_execution_queue('clearml-demo')
     PipelineDecorator.debug_pipeline()
 
-    PipelineDecorator.add_function_step(name="xgboost_train", function="xgboost_train",function_return=["xgb_model"], project_name="examples")
+    @PipelineDecorator.add_function_step(name="xgboost_train", function="xgboost_train",function_return=["xgb_model"], project_name="examples")
     
     executing_pipeline()
 
