@@ -201,8 +201,7 @@ def preprocessing():
 
     return new_df
 
-# @PipelineDecorator.component(return_values=["xgb"],cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev", parents =["preprocessing"])
-@PipelineDecorator.add_function_step(name="xgboost_train", function="xgboost_train",function_return=["xgb_model"], project_name="examples")
+@PipelineDecorator.component(return_values=["xgb"],cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev", parents =["preprocessing"])
 def xgboost_train(new_df):
     print("<<<<<<<<<<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>>>>>")
     import pandas as pd
