@@ -397,6 +397,6 @@ if __name__ == "__main__":
     )
 
     # Start the pipeline on the services queue (remote machine, default on the clearml-server)
-    pipe.start()
+    pipe.start(queue="clearml-demo")
 
     print("process completed")
