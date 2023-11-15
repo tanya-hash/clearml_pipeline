@@ -58,6 +58,21 @@ def preprocessing():
     for col in num_cols:
         replace_with_thresholds(train, col)
 
+    plot = sns.countplot(train.Gender)
+    plt.show(block=Flase)
+    Logger.current_logger().report_matplotlib_figure("Gender and Response",plot,report_image=False,report_interactive=True)
+    
+    df = train.groupby(['Vehicle_Age','Response'])['id'].count().to_frame().rename(columns={'id':'count'}).reset_index()
+    plot = sns.catplot(x="Vehicle_Age", y="count",col="Response",data=df, kind="bar",height=4, aspect=.7)
+    plt.show(block=False)
+    Logger.current_logger().report_matplotlib_figure("Vehicle Age and Response",plot,report_image=False,report_interactive=True)
+    
+    df = train.groupby(['Vehicle_Damage','Response'])['id'].count().to_frame().rename(columns={'id':'count'}).reset_index()
+    plot = sns.catplot(x="Vehicle_Damage", y="count",col="Response", data=df, kind="bar",height=4, aspect=.7)
+    plt.show(block=False)
+    Logger.current_logger().report_matplotlib_figure("Vehicle Damage and Response",plot,report_image=False,report_interactive=True)
+
+
     train['Gender'] = train['Gender'].map({'Female': 0, 'Male': 1}).astype(int)
 
     region = train[['Region_Code']].value_counts()
