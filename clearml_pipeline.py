@@ -169,7 +169,7 @@ def preprocessing():
     return new_df
 
 @PipelineDecorator.component(return_values=["xgb"],cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev")
-def xgboost_train():
+def xgboost_train(new_df):
     print("<<<<<<<<<<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>>>>>")
     import pandas as pd
     from xgboost import XGBClassifier
@@ -199,7 +199,7 @@ def xgboost_train():
     return xgb
 
 @PipelineDecorator.component(return_values=['rf_model','X_test','y_test'], cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev")
-def rf_train():
+def rf_train(new_df):
     print("<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>")
     import pandas as pd
     from sklearn.ensemble import RandomForestClassifier
@@ -329,10 +329,10 @@ def executing_pipeline(mock_parameter="mock", xgb_model=None, rf_model=None):
     new_df = preprocessing()
     
     print("<<<<<<<<<<launch step two>>>>>>>>>>")
-    xgb_model = xgboost_train()
+    xgb_model = xgboost_train(new_df)
 
     print("<<<<<<<<<<launch step three>>>>>>>>>>")
-    rf_model, X_test, y_test = rf_train()
+    rf_model, X_test, y_test = rf_train(new_df)
 
     print("<<<<<launch step four>>>>>>")
     accuracy_xgb, accuracy_rf = inference(rf_model,xgb_model, X_test, y_test)
