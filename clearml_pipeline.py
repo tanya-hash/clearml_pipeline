@@ -201,7 +201,7 @@ def preprocessing():
 
     return new_df
 
-@PipelineDecorator.component(return_values=["xgb"],cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev")
+@PipelineDecorator.component(return_values=["xgb"],cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev", parents =["preprocessing"])
 def xgboost_train(new_df):
     print("<<<<<<<<<<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>>>>>")
     import pandas as pd
@@ -232,7 +232,7 @@ def xgboost_train(new_df):
     return xgb
 
 
-@PipelineDecorator.component(return_values=['rf_model','X_test','y_test'], cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev")
+@PipelineDecorator.component(return_values=['rf_model','X_test','y_test'], cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev", parents=["preprocessing"])
 def rf_train(new_df):
     print("<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>")
     import pandas as pd
@@ -263,7 +263,7 @@ def rf_train(new_df):
     print("Completed Random Forest")
     return rf_model, X_test, y_test
 
-@PipelineDecorator.component(return_values=["accuracy_xgb","accuracy_rf"], cache=True, task_type=TaskTypes.qc)
+@PipelineDecorator.component(return_values=["accuracy_xgb","accuracy_rf"], cache=True, task_type=TaskTypes.qc, parents=["preprocessing',"xgboost_train","rf_train"])
 def inference(rf_model, xgb_model, X_test, y_test):
     from sklearn import metrics
     from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, roc_curve, f1_score
