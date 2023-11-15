@@ -1,9 +1,7 @@
 from clearml import PipelineController
 # import pip_system_certs
 from clearml import TaskTypes
-from clearml.automation.controller import PipelineDecorator
 
-@PipelineDecorator.component(return_values=['dataframe'], task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev")
 def preprocessing():
     import pandas as pd
     import seaborn as sns
@@ -201,7 +199,6 @@ def preprocessing():
 
     return new_df
 
-@PipelineDecorator.component(return_values=["xgb"],cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev")
 def xgboost_train(new_df):
     print("<<<<<<<<<<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>>>>>")
     import pandas as pd
@@ -232,7 +229,6 @@ def xgboost_train(new_df):
     return xgb
 
 
-@PipelineDecorator.component(return_values=['rf_model','X_test','y_test'], cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev")
 def rf_train(new_df):
     print("<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>")
     import pandas as pd
@@ -263,7 +259,7 @@ def rf_train(new_df):
     print("Completed Random Forest")
     return rf_model, X_test, y_test
 
-@PipelineDecorator.component(return_values=["accuracy_xgb","accuracy_rf"], cache=True, task_type=TaskTypes.qc)
+
 def inference(rf_model, xgb_model, X_test, y_test):
     from sklearn import metrics
     from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, roc_curve, f1_score
@@ -352,31 +348,55 @@ def inference(rf_model, xgb_model, X_test, y_test):
     print("accuracies",accuracy_xgb, accuracy_rf)
 
     return accuracy_xgb,accuracy_rf
-
-
-@PipelineDecorator.pipeline(name="Upsell_CrossSell_pipeline", project="examples", version="0.0.5", pipeline_execution_queue=None)
-def executing_pipeline(mock_parameter="mock", xgb_model=None, rf_model=None):
-    print(mock_parameter)
-
-    # Use the pipeline argument to start the pipeline and pass it ot the first step
-    print("<<<<<<<<<launch step one>>>>>>>")
-    new_df = preprocessing()
-    
-    print("<<<<<<<<<<launch step two>>>>>>>>>>")
-    xgb_model = xgboost_train(new_df)
-
-    print("<<<<<<<<<<launch step three>>>>>>>>>>")
-    rf_model, X_test, y_test = rf_train(new_df)
-
-    print("<<<<<launch step four>>>>>>")
-    accuracy_xgb, accuracy_rf = inference(rf_model,xgb_model, X_test, y_test)
     
 
 if __name__ == "__main__":
     # set the pipeline steps default execution queue (per specific step we can override it with the decorator)
-    PipelineDecorator.set_default_execution_queue('clearml-demo')
-    PipelineDecorator.debug_pipeline()
-    
-    executing_pipeline()
+     
+    pipe = PipelineController(
+        project='examples',
+        name='Upsell_CrossSell_pipeline',
+        version='1.1',
+        add_pipeline_tags=False,
+    )
+
+     # set the default execution queue to be used (per step we can override the execution)
+    pipe.set_default_execution_queue('clearml-demo')
+
+    pipe.add_function_step(
+        name='preprocessing',
+        function=preprocessing,
+        # function_kwargs=dict(pickle_data_url='${pipeline.url}'),
+        function_return=['data_frame'],
+        cache_executed_step=True,
+    )
+    pipe.add_function_step(
+        name='xgboost_train',
+        parents=['preprocessing'],
+        function=xgboost_train,
+        function_kwargs=dict(data_frame='${preprocessing.data_frame}'),
+        function_return=['xgb_model'],
+        cache_executed_step=True,
+    )
+    pipe.add_function_step(
+        name='rf_train',
+        parents=['preprocessing'],  # the pipeline will automatically detect the dependencies based on the kwargs inputs
+        function=rf_train,
+        function_kwargs=dict(data_frame='${preprocessing.data_frame}'),
+        function_return=['rf_model','X_test','y_test'],
+        cache_executed_step=True,
+    )
+
+    pipe.add_function_step(
+        name='inference',
+        parents=['rf_train', 'xgb_train],  # the pipeline will automatically detect the dependencies based on the kwargs inputs
+        function=inference,
+        function_kwargs=dict(data_frame='${rf_train.X_test, rf_train.y_test}', model = '${rf_train.rf_model, xgboost_train.xgb_model}'),
+        function_return=['accuracy_xgb','accuracy_rf'],
+        cache_executed_step=True,
+    )
+
+    # Start the pipeline on the services queue (remote machine, default on the clearml-server)
+    pipe.start()
 
     print("process completed")
