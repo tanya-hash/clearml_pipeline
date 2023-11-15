@@ -3,7 +3,7 @@ from clearml.automation.controller import PipelineDecorator
 # import pip_system_certs
 from clearml import TaskTypes
 
-@PipelineDecorator.component(return_values=['dataframe'], task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev")
+@PipelineDecorator.component(return_values=['dataframe'], task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="master")
 def preprocessing():
     import pandas as pd
     import seaborn as sns
