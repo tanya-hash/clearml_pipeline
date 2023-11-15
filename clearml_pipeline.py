@@ -130,6 +130,26 @@ def inference(rf_model, xgb_model, X_test, y_test):
     yaxis="True",
 )
 
+    xgb_probs = xgb_model.predict_proba(X_test)[:, 1]
+    roc_value = roc_auc_score(y_test, xgb_probs)
+    fpr, tpr, thresholds = roc_curve(y_test, xgb_probs)
+    plt.figure()
+    plot = plt.plot(fpr, tpr, label=' (area = %0.2f)' % roc_value)
+    plt.plot([0, 1], [0, 1],'r--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title(' RF  ROC Curve')
+    plt.legend(loc="lower right")
+    plt.show(block=False)
+    Logger.current_logger().report_matplotlib_figure(
+    title="XGBoost ROC",
+    series="ignored",
+    figure=plot,
+    report_interactive=True,
+)
+
     print("accuracies",accuracy_xgb, accuracy_rf)
 
     return accuracy_xgb,accuracy_rf
