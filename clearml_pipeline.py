@@ -369,6 +369,7 @@ if __name__ == "__main__":
         # function_kwargs=dict(pickle_data_url='${pipeline.url}'),
         function_return=['data_frame'],
         cache_executed_step=True,
+        execution_queue="clearml-demo"
     )
     pipe.add_function_step(
         name='xgboost_train',
@@ -377,6 +378,7 @@ if __name__ == "__main__":
         function_kwargs=dict(data_frame='${preprocessing.data_frame}'),
         function_return=['xgb_model'],
         cache_executed_step=True,
+        execution_queue="clearml-demo"
     )
     pipe.add_function_step(
         name='rf_train',
@@ -385,6 +387,7 @@ if __name__ == "__main__":
         function_kwargs=dict(data_frame='${preprocessing.data_frame}'),
         function_return=['rf_model','X_test','y_test'],
         cache_executed_step=True,
+        execution_queue="clearml-demo"
     )
 
     pipe.add_function_step(
@@ -394,6 +397,7 @@ if __name__ == "__main__":
         function_kwargs=dict(data_frame='${rf_train.X_test, rf_train.y_test}', model = '${rf_train.rf_model, xgboost_train.xgb_model}'),
         function_return=['accuracy_xgb','accuracy_rf'],
         cache_executed_step=True,
+        execution_queue="clearml-demo"
     )
 
     # Start the pipeline on the services queue (remote machine, default on the clearml-server)
