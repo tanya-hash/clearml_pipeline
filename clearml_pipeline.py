@@ -378,6 +378,7 @@ if __name__ == "__main__":
     PipelineDecorator.debug_pipeline()
     
     PipelineDecorator.add_step(
+        self,
         name='preprocessing'
     )
     
