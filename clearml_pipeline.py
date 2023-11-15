@@ -354,7 +354,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     return accuracy_xgb,accuracy_rf
 
 
-@PipelineDecorator.pipeline(name="Upsell_CrossSell_pipeline", project="examples", version="0.0.5", pipeline_execution_queue=None, default_queue="clearml_demo")
+@PipelineDecorator.pipeline(name="Upsell_CrossSell_pipeline", project="examples", version="0.0.5", pipeline_execution_queue=None)
 def executing_pipeline(mock_parameter="mock", xgb_model=None, rf_model=None):
     print(mock_parameter)
 
@@ -375,7 +375,7 @@ def executing_pipeline(mock_parameter="mock", xgb_model=None, rf_model=None):
 if __name__ == "__main__":
     # set the pipeline steps default execution queue (per specific step we can override it with the decorator)
     PipelineDecorator.set_default_execution_queue('clearml-demo')
-    # PipelineDecorator.debug_pipeline()
+    PipelineDecorator.debug_pipeline()
     
     pipe = PipelineController(
         project='examples',
