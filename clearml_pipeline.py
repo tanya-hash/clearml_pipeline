@@ -383,6 +383,9 @@ if __name__ == "__main__":
         version='0.0.5',
         add_pipeline_tags=False,
     )
+
+    pipe.set_default_execution_queue('clearml-demo')
+    
     pipe.add_function_step(
         name='preprocessing',
         function=preprocessing,
