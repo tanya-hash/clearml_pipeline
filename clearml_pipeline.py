@@ -82,7 +82,7 @@ def preprocessing():
     
     df = train.groupby(['Vehicle_Damage','Response'])['id'].count().to_frame().rename(columns={'id':'count'}).reset_index()
     plot_damage = sns.catplot(x="Vehicle_Damage", y="count",col="Response", data=df, kind="bar",height=4, aspect=.7)
-    plt.title("Vehicle Damage and Response)
+    plt.title("Vehicle Damage and Response")
     plt.show(block=False)
     Logger.current_logger().report_matplotlib_figure(title="Vehicle Damage and Response",
     series="ignored",
