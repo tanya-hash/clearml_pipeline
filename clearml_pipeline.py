@@ -230,7 +230,7 @@ def xgboost_train(new_df):
     joblib.dump(xgb, "xgb_model.pkl")
     print("Completed XGB Training")
     return xgb
-@PipelineDecorator.add_function_step(self, name = "xgboost_train", function = xgboost_train, function_return=["xgb"])
+
 
 @PipelineDecorator.component(return_values=['rf_model','X_test','y_test'], cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev")
 def rf_train(new_df):
@@ -376,6 +376,19 @@ if __name__ == "__main__":
     # set the pipeline steps default execution queue (per specific step we can override it with the decorator)
     PipelineDecorator.set_default_execution_queue('clearml-demo')
     PipelineDecorator.debug_pipeline()
+    
+    pipe = PipelineController(
+        project='examples',
+        name='Upsell_CrossSell_pipeline',
+        version='0.0.5',
+        add_pipeline_tags=False,
+    )
+    pipe.add_function_step(
+        name='preprocessing',
+        function=preprocessing,
+        function_return=['data_frame'],
+        cache_executed_step=True,
+    )
     executing_pipeline()
 
     print("process completed")
