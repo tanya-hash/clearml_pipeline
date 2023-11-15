@@ -377,11 +377,6 @@ if __name__ == "__main__":
     PipelineDecorator.set_default_execution_queue('clearml-demo')
     PipelineDecorator.debug_pipeline()
     
-    PipelineDecorator.add_step(
-        self,
-        name='preprocessing'
-    )
-    
     executing_pipeline()
 
     print("process completed")
