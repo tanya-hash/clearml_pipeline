@@ -377,23 +377,12 @@ if __name__ == "__main__":
     PipelineDecorator.set_default_execution_queue('clearml-demo')
     PipelineDecorator.debug_pipeline()
     
-    pipe = PipelineController(
-        project='examples',
-        name='Upsell_CrossSell_pipeline',
-        version='0.0.5',
-        add_pipeline_tags=False,
-    )
-
-    pipe.set_default_execution_queue('clearml-demo')
-    
-    pipe.add_function_step(
+    PipelineDecorator.add_function_step(
         name='preprocessing',
         function=preprocessing,
         function_return=['data_frame'],
         cache_executed_step=True,
     )
-
-    pipe.start()
     
     executing_pipeline()
 
