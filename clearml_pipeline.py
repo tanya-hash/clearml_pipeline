@@ -395,7 +395,7 @@ if __name__ == "__main__":
 
     pipe.add_function_step(
         name='inference',
-        parents=['rf_train', 'xgb_train'],  # the pipeline will automatically detect the dependencies based on the kwargs inputs
+        parents=['rf_train', 'xgboost_train'],  # the pipeline will automatically detect the dependencies based on the kwargs inputs
         function=inference,
         function_kwargs=dict(data_frame='${rf_train.X_test, rf_train.y_test}', model = '${rf_train.rf_model, xgboost_train.xgb_model}'),
         function_return=['accuracy_xgb','accuracy_rf'],
