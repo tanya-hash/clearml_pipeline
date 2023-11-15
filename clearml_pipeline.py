@@ -354,7 +354,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     return accuracy_xgb,accuracy_rf
 
 
-@PipelineDecorator.pipeline(name="Upsell_CrossSell_pipeline", project="examples", version="0.0.5", pipeline_execution_queue=None)
+@PipelineDecorator.pipeline(name="Upsell_CrossSell_pipeline", project="demo_pipeline", version="0.0.5", pipeline_execution_queue=None)
 def executing_pipeline(mock_parameter="mock", xgb_model=None, rf_model=None):
     print(mock_parameter)
 
