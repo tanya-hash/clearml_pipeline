@@ -354,6 +354,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
 
 if __name__ == "__main__":
     # set the pipeline steps default execution queue (per specific step we can override it with the decorator)
+    PipelineDecorator.set_default_execution_queue('clearml-demo')
      
     pipe = PipelineController(
         project='examples_2',
