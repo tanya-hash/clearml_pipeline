@@ -118,7 +118,7 @@ def preprocessing():
 
     pol_sal_chh = []
     for i in train['Policy_Sales_Channel']:
-        res = policy_chh[policy_chh['Policy_Sales_Channel'] == i]['Percentage'].values[0]
+        res = policy_chh[policy_chh['index'] == i]['Percentage'].values[0]
         if res <= 5:
             pol_sal_chh.append('less than 5')
         elif res > 5 and res <= 10:
