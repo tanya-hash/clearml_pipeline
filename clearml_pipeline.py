@@ -61,14 +61,14 @@ def preprocessing():
     for col in num_cols:
         replace_with_thresholds(train, col)
 
-    plot_gender = sns.countplot(train.Gender)
-    plt.title("Gender and Response")
-    plt.show(block=False)
-    Logger.current_logger().report_matplotlib_figure(title="Gender and Reponse",
-    series="ignored",
-    figure=plot_gender,
-    report_interactive=True,
-)
+#     plot_gender = sns.countplot(train.Gender)
+#     plt.title("Gender and Response")
+#     plt.show(block=False)
+#     Logger.current_logger().report_matplotlib_figure(title="Gender and Reponse",
+#     series="ignored",
+#     figure=plot_gender,
+#     report_interactive=True,
+# )
     
     df = train.groupby(['Vehicle_Age','Response'])['id'].count().to_frame().rename(columns={'id':'count'}).reset_index()
     plot_age = sns.catplot(x="Vehicle_Age", y="count",col="Response",data=df, kind="bar",height=4, aspect=.7)
