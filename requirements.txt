@@ -1,4 +1,5 @@
 clearml >= 1.1.6
+dvc==3.30.1
 scikit-learn
 pandas
 seaborn==0.12.2
