@@ -192,7 +192,7 @@ def preprocessing():
     train['binn_vintage'] = train['binn_vintage'].map(
         {'51-100': "A", '101-150': "B", "151-200": "C", "201-250": "D", ">250": "E", "<=50": "F"})
     train['binn_policy_sales_channel'] = train['binn_policy_sales_channel'].map(
-        {'15-20': "A", 'less than 5': "B", "20-25 ": "C", "greater than 25": "D", "10-15": "E", "5-10": "F"})
+        {'15-20': "A", 'less than 5': "B", "20-25": "C", "greater than 25": "D", "10-15": "E", "5-10": "F"})
     train['binn_region_code'] = train['binn_region_code'].map(
         {'5-10': "A", 'greater than 15': "B", "10-15": "C", "less than 5": "D"})
     train['Vehicle_Age'] = train['Vehicle_Age'].map({'1-2 Year': "A", "< 1 Year": "B", "> 2 Years": "C"})
