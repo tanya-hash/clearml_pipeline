@@ -217,6 +217,8 @@ def xgboost_train(new_df):
     X = df.drop(["Response"], axis=1)
     y = df.Response
 
+    print(">>>>>>>>>>>>>>>>>>>>>>>X.columns", X.columns.to_list())
+
     print(X.shape, y.shape)
 
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
