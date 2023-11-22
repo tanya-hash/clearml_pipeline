@@ -271,14 +271,15 @@ def rf_train(new_df):
 
 @PipelineDecorator.component(return_values=["accuracy_xgb","accuracy_rf"], cache=True, task_type=TaskTypes.qc, parents=["preprocessing","xgboost_train","rf_train"])
 def inference(rf_model, xgb_model, X_test, y_test):
+    import pandas as pd
     from sklearn import metrics
     from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, roc_curve, f1_score
-    from clearml import task, Logger, Model
+    from clearml import task, Logger, OutputModel, Model
     import matplotlib.pyplot as plt
     
     from clearml import Model
     
-    get_model = Model(model_id="6d0267f5fbdd4eb59cd35b482e165a78")
+    get_model = OutputModel(model_id="6d0267f5fbdd4eb59cd35b482e165a78")
     # Update the model weights id 6d0267f5fbdd4eb59cd35b482e165a78
     get_model.update_weights(weights_filename="RF_model.pkl")
     Model(model_id="6d0267f5fbdd4eb59cd35b482e165a78").publish()
@@ -361,6 +362,21 @@ def inference(rf_model, xgb_model, X_test, y_test):
         figure=plot,
         report_interactive=True,
     )
+    
+    
+    data = {
+        'Name': ['John', 'Alice', 'Bob'],
+        'Age': [25, 30, 22],
+        'Score': [85, 92, 78]
+    }
+
+    df = pd.DataFrame(data)
+    Logger.report_table(title="Sample Table", series="Sample Series", iteration=0, table_plot=df)
+    
+    for index, row in df.iterrows():
+        Logger.report_scalar(title="Age", series=row['Name'], value=row['Age'], iteration=index)
+        Logger.report_scalar(title="Score", series=row['Name'], value=row['Score'], iteration=index)
+
 
     print("accuracies",accuracy_xgb, accuracy_rf)
 
