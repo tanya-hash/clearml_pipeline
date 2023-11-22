@@ -279,10 +279,9 @@ def inference(rf_model, xgb_model, X_test, y_test):
     
     from clearml import Model
     
-    get_model = OutputModel(model_id="6d0267f5fbdd4eb59cd35b482e165a78")
-    # Update the model weights id 6d0267f5fbdd4eb59cd35b482e165a78
-    get_model.update_weights(weights_filename="RF_model.pkl")
-    Model(model_id="6d0267f5fbdd4eb59cd35b482e165a78").publish()
+    #get_model = OutputModel(model_id="6d0267f5fbdd4eb59cd35b482e165a78")
+    #get_model.update_weights(weights_filename="RF_model.pkl")
+    #Model(model_id="6d0267f5fbdd4eb59cd35b482e165a78").publish()
 
     predict_rf = rf_model.predict(X_test)
     print("predict_rf", predict_rf)
