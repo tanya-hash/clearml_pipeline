@@ -367,7 +367,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
         'Scores': ['Accuracy', 'Precission', 'Recall', 'F1 Score'],
         'Random Forest': [accuracy_rf+0.7, precision_rf, recall_rf, f1_rf],
         'Xgboost': [accuracy_xgb, precision_xgb, recall_xgb, f1_xgb],
-        'Previous Best': [accuracy_rf-0.7, precision_rf-0.3, recall_r+0.5, f1_rf+0.2]
+        'Previous Best': [accuracy_rf-0.7, precision_rf-0.3, recall_rf+0.5, f1_rf+0.2]
     }
 
     df = pd.DataFrame(data)
