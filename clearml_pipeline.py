@@ -10,7 +10,7 @@ def preprocessing():
     import matplotlib.pyplot as plt
     from clearml import task, Logger
     
-    # task = Task.init(project_name="myProject", task_name="myTask")
+    #task = Task.init(project_name="myProject", task_name="myTask")
 
     train = pd.read_csv("dataset/Raw_Data.csv")
     print("Preprocessing..")
@@ -370,11 +370,11 @@ def inference(rf_model, xgb_model, X_test, y_test):
     }
 
     df = pd.DataFrame(data)
-    Logger.report_table(title="Sample Table", series="Sample Series", iteration=0, table_plot=df)
+    Logger.current_logger().report_table(title="Sample Table", series="Sample Series", iteration=0, table_plot=df)
     
     for index, row in df.iterrows():
-        Logger.report_scalar(title="Age", series=row['Name'], value=row['Age'], iteration=index)
-        Logger.report_scalar(title="Score", series=row['Name'], value=row['Score'], iteration=index)
+        Logger.current_logger().report_scalar(title="Age", series=row['Name'], value=row['Age'], iteration=index)
+        Logger.current_logger().report_scalar(title="Score", series=row['Name'], value=row['Score'], iteration=index)
 
 
     print("accuracies",accuracy_xgb, accuracy_rf)
