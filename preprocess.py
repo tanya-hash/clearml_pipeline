@@ -11,7 +11,7 @@ class Preprocess(object):
 
     def preprocess(self, body: dict, state: dict, collect_custom_statistics_fn=None) -> Any:
         # we expect to get two valid on the dict x0, and x1
-        return [[body.get("x0", None), body.get("x1", None)], ]
+        return [list(body.values())]
 
     def postprocess(self, data: Any, state: dict, collect_custom_statistics_fn=None) -> dict:
         # post process the data returned from the model inference engine
