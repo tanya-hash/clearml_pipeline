@@ -11,6 +11,7 @@ class Preprocess(object):
 
     def preprocess(self, body: dict, state: dict, collect_custom_statistics_fn=None) -> Any:
         # we expect to get two valid on the dict x0, and x1
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", [list(body.values())])
         return [list(body.values())]
 
     def postprocess(self, data: Any, state: dict, collect_custom_statistics_fn=None) -> dict:
