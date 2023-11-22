@@ -9,6 +9,8 @@ def preprocessing():
     import seaborn as sns
     import matplotlib.pyplot as plt
     from clearml import task, Logger
+    
+    # task = Task.init(project_name="myProject", task_name="myTask")
 
     train = pd.read_csv("dataset/Raw_Data.csv")
     print("Preprocessing..")
@@ -74,21 +76,23 @@ def preprocessing():
     plot_age = sns.catplot(x="Vehicle_Age", y="count",col="Response",data=df, kind="bar",height=4, aspect=.7)
     plt.title("Vehicle Age and Response")
     plt.show(block=False)
-    Logger.current_logger().report_matplotlib_figure(title="Vehicle Age and Reponse",
-    series="ignored",
-    figure=plot_age,
-    report_interactive=True,
-)
+    Logger.current_logger().report_matplotlib_figure(
+        title="Vehicle Age and Reponse",
+        series="ignored",
+        figure=plot_age,
+        report_interactive=True,
+    )
     
     df = train.groupby(['Vehicle_Damage','Response'])['id'].count().to_frame().rename(columns={'id':'count'}).reset_index()
     plot_damage = sns.catplot(x="Vehicle_Damage", y="count",col="Response", data=df, kind="bar",height=4, aspect=.7)
     plt.title("Vehicle Damage and Response")
     plt.show(block=False)
-    Logger.current_logger().report_matplotlib_figure(title="Vehicle Damage and Response",
-    series="ignored",
-    figure=plot_damage,
-    report_interactive=True,
-)
+    Logger.current_logger().report_matplotlib_figure(
+        title="Vehicle Damage and Response",
+        series="ignored",
+        figure=plot_damage,
+        report_interactive=True,
+    )
 
 
     train['Gender'] = train['Gender'].map({'Female': 0, 'Male': 1}).astype(int)
@@ -269,8 +273,15 @@ def rf_train(new_df):
 def inference(rf_model, xgb_model, X_test, y_test):
     from sklearn import metrics
     from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, roc_curve, f1_score
-    from clearml import task, Logger
+    from clearml import task, Logger, Model
     import matplotlib.pyplot as plt
+    
+    from clearml import Model
+    
+    get_model = Model(model_id="6d0267f5fbdd4eb59cd35b482e165a78")
+    # Update the model weights id 6d0267f5fbdd4eb59cd35b482e165a78
+    get_model.update_weights(weights_filename="RF_model.pkl")
+    Model(model_id="6d0267f5fbdd4eb59cd35b482e165a78").publish()
 
     predict_rf = rf_model.predict(X_test)
     print("predict_rf", predict_rf)
@@ -285,12 +296,12 @@ def inference(rf_model, xgb_model, X_test, y_test):
 
     cm = metrics.confusion_matrix(y_test, predict_rf)
     Logger.current_logger().report_confusion_matrix(
-    "Random Forest",
-    "ignored",
-    matrix=cm,
-    xaxis="Predicted",
-    yaxis="True",
-)
+        "Random Forest",
+        "ignored",
+        matrix=cm,
+        xaxis="Predicted",
+        yaxis="True",
+    )
 
     rf_probs = rf_model.predict_proba(X_test)[:, 1]
     roc_value = roc_auc_score(y_test, rf_probs)
@@ -306,11 +317,11 @@ def inference(rf_model, xgb_model, X_test, y_test):
     plt.legend(loc="lower right")
     plt.show(block=False)
     Logger.current_logger().report_matplotlib_figure(
-    title="Random Forest ROC",
-    series="ignored",
-    figure=plot,
-    report_interactive=True,
-)
+        title="Random Forest ROC",
+        series="ignored",
+        figure=plot,
+        report_interactive=True,
+    )
 
     predict_xgb = xgb_model.predict(X_test)
     accuracy_xgb = accuracy_score(y_test, predict_xgb)
@@ -324,12 +335,12 @@ def inference(rf_model, xgb_model, X_test, y_test):
 
     cm = metrics.confusion_matrix(y_test, predict_xgb)
     Logger.current_logger().report_confusion_matrix(
-    "XGBoost",
-    "ignored",
-    matrix=cm,
-    xaxis="Predicted",
-    yaxis="True",
-)
+        "XGBoost",
+        "ignored",
+        matrix=cm,
+        xaxis="Predicted",
+        yaxis="True",
+    )
 
     xgb_probs = xgb_model.predict_proba(X_test)[:, 1]
     roc_value = roc_auc_score(y_test, xgb_probs)
@@ -345,11 +356,11 @@ def inference(rf_model, xgb_model, X_test, y_test):
     plt.legend(loc="lower right")
     plt.show(block=False)
     Logger.current_logger().report_matplotlib_figure(
-    title="XGBoost ROC",
-    series="ignored",
-    figure=plot,
-    report_interactive=True,
-)
+        title="XGBoost ROC",
+        series="ignored",
+        figure=plot,
+        report_interactive=True,
+    )
 
     print("accuracies",accuracy_xgb, accuracy_rf)
 
