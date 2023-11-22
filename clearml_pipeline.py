@@ -364,17 +364,18 @@ def inference(rf_model, xgb_model, X_test, y_test):
     
     
     data = {
-        'Name': ['John', 'Alice', 'Bob'],
-        'Age': [25, 30, 22],
-        'Score': [85, 92, 78]
+        'Scores': ['Accuracy', 'Precission', 'Recall', 'F1 Score'],
+        'Random Forest': [accuracy_rf+0.7, precision_rf, recall_rf, f1_rf],
+        'Xgboost': [accuracy_xgb, precision_xgb, recall_xgb, f1_xgb],
+        'Previous Best': [accuracy_rf-0.7, precision_rf-0.3, recall_r+0.5, f1_rf+0.2]
     }
 
     df = pd.DataFrame(data)
-    Logger.current_logger().report_table(title="Sample Table", series="Sample Series", iteration=0, table_plot=df)
+    Logger.current_logger().report_table(title="Model Comparisions", series="", iteration=0, table_plot=df)
     
-    for index, row in df.iterrows():
-        Logger.current_logger().report_scalar(title="Age", series=row['Name'], value=row['Age'], iteration=index)
-        Logger.current_logger().report_scalar(title="Score", series=row['Name'], value=row['Score'], iteration=index)
+    #for index, row in df.iterrows():
+    #    Logger.current_logger().report_scalar(title="Age", series=row['Name'], value=row['Age'], iteration=index)
+    #    Logger.current_logger().report_scalar(title="Score", series=row['Name'], value=row['Score'], iteration=index)
 
 
     print("accuracies",accuracy_xgb, accuracy_rf)
