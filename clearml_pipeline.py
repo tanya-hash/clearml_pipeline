@@ -406,8 +406,8 @@ def inference(rf_model, xgb_model, X_test, y_test):
     model_list = Model.query_models()
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>model_list", model_list[-5:])
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>Model names", model_list[-1].name, model_list[-2].name, model_list[-3].name, model_list[-4].name)
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>>Model names", model_list[-1]._get_model_data.name, model_list[-2]._get_model_data.name, model_list[-3]._get_model_data.name, model_list[-4]._get_model_data.name)
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>Model namessssssssssss", model_list[-1]._get_model_data, model_list[-2]._get_model_data, model_list[-3]._get_model_data, model_list[-4]._get_model_data)
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>Model names", model_list[-1]._get_model_data.name, model_list[-2]._get_model_data.name, model_list[-3]._get_model_data.name, model_list[-4]._get_model_data.name)
         
 
     # Create a ClearML task object
