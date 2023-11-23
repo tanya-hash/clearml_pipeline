@@ -404,7 +404,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     
     
     model_list = Model.query_models()
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>model_list", model_list)
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>model_list", model_list, model_list[-1].name, model_list[-2].name, model_list[-3].name, model_list[-4].name)
         
 
     # Create a ClearML task object
@@ -412,9 +412,9 @@ def inference(rf_model, xgb_model, X_test, y_test):
     # Get the task's output models
     output_models = c_task.output_models_id
     # Get the name of the latest output model
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>output_models", output_models) 
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>output_models", type(output_models), output_models) 
     #latest_output_model_name = output_models[-1].name
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>output_models[-1].name", output_models[-1], output_models[-2], output_models[-3], type(output_models[-4]))
+    #print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>output_models[-1].name", output_models[-1], output_models[-2], output_models[-3], type(output_models[-4]))
 
     # Print the name of the latest output model
     #print(latest_output_model_name)
