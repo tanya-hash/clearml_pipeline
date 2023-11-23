@@ -276,8 +276,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, roc_curve, f1_score
     from clearml import task, Logger, OutputModel, Model
     import matplotlib.pyplot as plt
-    
-    from clearml import Model
+    import clearml
     
     #get_model = OutputModel(model_id="6d0267f5fbdd4eb59cd35b482e165a78")
     #get_model.update_weights(weights_filename="RF_model.pkl")
@@ -405,7 +404,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
         
 
     # Create a ClearML task object
-    task = clearml.Task.get_task()
+    task = Task.get_task()
     # Get the task's output models
     output_models = task.output_models
     # Get the name of the latest output model
