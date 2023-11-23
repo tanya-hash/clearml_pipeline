@@ -282,6 +282,10 @@ def inference(rf_model, xgb_model, X_test, y_test):
     #get_model = OutputModel(model_id="6d0267f5fbdd4eb59cd35b482e165a78")
     #get_model.update_weights(weights_filename="RF_model.pkl")
     #Model(model_id="6d0267f5fbdd4eb59cd35b482e165a78").publish()
+    
+    # Deploy the model from command line
+    # Add version and updated time in the model description endpoint
+    # The current best model is 4% better than previously best deployed model. Hence it has been deployed automatically.
 
     predict_rf = rf_model.predict(X_test)
     print("predict_rf", predict_rf)
@@ -376,6 +380,42 @@ def inference(rf_model, xgb_model, X_test, y_test):
     #for index, row in df.iterrows():
     #    Logger.current_logger().report_scalar(title="Age", series=row['Name'], value=row['Age'], iteration=index)
     #    Logger.current_logger().report_scalar(title="Score", series=row['Name'], value=row['Score'], iteration=index)
+    
+    
+    import paramiko
+    # SSH connection parameters
+    hostname = "20.231.9.222"
+    username = "rsystems"
+    password = "Rsystems@321"
+    command = "cd clearml-serving/docker && ~/.local/bin/clearml-serving --id '65d4b25ba7e84929b9b5b74fd367d6fc' model auto-update --engine sklearn --endpoint 'crosssell' --preprocess 'preprocess.py' --name 'Upsell_CrossSell_pipeline #7 - RF_model' --max-versions 5"
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    try:
+        client.connect(hostname, username=username, password=password)
+        stdin, stdout, stderr = client.exec_command(command)
+        print(f"Command: {command}")
+        print(f"Output:\n{stdout.read().decode('utf-8')}")
+        print(f"Errors:\n{stderr.read().decode('utf-8')}")
+
+    finally:
+        # Close the connection
+        client.close()
+        
+        
+        
+
+    # Create a ClearML task object
+    task = clearml.Task.get_task()
+    # Get the task's output models
+    output_models = task.output_models
+    # Get the name of the latest output model
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>output_models", output_models) 
+    latest_output_model_name = output_models[-1].name
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>output_models[-1].name", output_models[-1].name, output_models[-2].name, output_models[-3].name, output_models[-4].name)
+
+    # Print the name of the latest output model
+    print(latest_output_model_name)
+
 
 
     print("accuracies",accuracy_xgb, accuracy_rf+0.04)
