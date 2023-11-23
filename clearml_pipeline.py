@@ -404,7 +404,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
         
 
     # Create a ClearML task object
-    task = Task.get_task()
+    task = clearml.Task.get_task()
     # Get the task's output models
     output_models = task.output_models
     # Get the name of the latest output model
