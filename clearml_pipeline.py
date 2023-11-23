@@ -401,20 +401,24 @@ def inference(rf_model, xgb_model, X_test, y_test):
         client.close()
         
         
+    
+    
+    model_list = Model.query_models()
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>model_list", model_list)
         
 
     # Create a ClearML task object
-    task = clearml.Task.get_task()
+    c_task = clearml.Task.get_task()
     # Get the task's output models
-    output_models = task.output_models
+    output_models = c_task.output_models_id
     # Get the name of the latest output model
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>>output_models", output_models) 
-    latest_output_model_name = output_models[-1].name
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>output_models[-1].name", output_models[-1].name, output_models[-2].name, output_models[-3].name, output_models[-4].name)
+    #latest_output_model_name = output_models[-1].name
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>output_models[-1].name", output_models[-1], output_models[-2], output_models[-3], type(output_models[-4])
 
     # Print the name of the latest output model
-    print(latest_output_model_name)
-
+    #print(latest_output_model_name)
+    
 
 
     print("accuracies",accuracy_xgb, accuracy_rf+0.04)
