@@ -414,7 +414,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     # Get the name of the latest output model
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>>output_models", output_models) 
     #latest_output_model_name = output_models[-1].name
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>output_models[-1].name", output_models[-1], output_models[-2], output_models[-3], type(output_models[-4])
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>output_models[-1].name", output_models[-1], output_models[-2], output_models[-3], type(output_models[-4]))
 
     # Print the name of the latest output model
     #print(latest_output_model_name)
