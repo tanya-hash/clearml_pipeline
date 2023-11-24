@@ -430,7 +430,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
 
 
 @PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", project="demo_pipeline_2", version="0.0.5")
-def executing_pipeline(mock_parameter="mock", xgb_model=None, rf_model=None):
+def executing_pipeline(user_name= "KUNDAN SINGH", mock_parameter="mock", xgb_model=None, rf_model=None):
     print(mock_parameter)
 
     # Use the pipeline argument to start the pipeline and pass it ot the first step
@@ -455,6 +455,6 @@ if __name__ == "__main__":
     
     PipelineDecorator.run_locally()
     
-    executing_pipeline("USER": "KUNDAN SINGH")
+    executing_pipeline(user_name= "KUNDAN SINGH")
 
     print("process completed..")
