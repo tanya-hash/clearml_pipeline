@@ -3,7 +3,7 @@ from clearml import PipelineController
 from clearml import TaskTypes
 from clearml.automation.controller import PipelineDecorator
 
-@PipelineDecorator.component(return_values=['dataframe'], task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev")
+@PipelineDecorator.component(return_values=['dataframe'], cache=False, task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev")
 def preprocessing():
     import pandas as pd
     import seaborn as sns
@@ -205,7 +205,7 @@ def preprocessing():
 
     return new_df
 
-@PipelineDecorator.component(return_values=["xgb"],cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev", parents =["preprocessing"])
+@PipelineDecorator.component(return_values=["xgb"],cache=False, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev", parents =["preprocessing"])
 def xgboost_train(new_df):
     print("<<<<<<<<<<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>>>>>")
     import pandas as pd
@@ -238,7 +238,7 @@ def xgboost_train(new_df):
     return xgb
 
 
-@PipelineDecorator.component(return_values=['rf_model','X_test','y_test'], cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev", parents=["preprocessing"])
+@PipelineDecorator.component(return_values=['rf_model','X_test','y_test'], cache=False, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev", parents=["preprocessing"])
 def rf_train(new_df):
     print("<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>")
     import pandas as pd
@@ -269,7 +269,7 @@ def rf_train(new_df):
     print("Completed Random Forest")
     return rf_model, X_test, y_test
 
-@PipelineDecorator.component(return_values=["accuracy_xgb","accuracy_rf"], cache=True, task_type=TaskTypes.qc, parents=["preprocessing","xgboost_train","rf_train"])
+@PipelineDecorator.component(return_values=["accuracy_xgb","accuracy_rf"], cache=False, task_type=TaskTypes.qc, parents=["xgboost_train","rf_train"])
 def inference(rf_model, xgb_model, X_test, y_test):
     import pandas as pd
     from sklearn import metrics
@@ -429,7 +429,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     return accuracy_xgb,accuracy_rf+0.04
 
 
-@PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", project="demo_pipeline_2", version="0.0.5", pipeline_execution_queue=None)
+@PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", project="demo_pipeline_2", version="0.0.5")
 def executing_pipeline(mock_parameter="mock", xgb_model=None, rf_model=None):
     print(mock_parameter)
 
@@ -450,9 +450,11 @@ def executing_pipeline(mock_parameter="mock", xgb_model=None, rf_model=None):
 if __name__ == "__main__":
     # set the pipeline steps default execution queue (per specific step we can override it with the decorator)
     PipelineDecorator.set_default_execution_queue('clearml-demo')
+    
     PipelineDecorator.debug_pipeline()
     
-    executing_pipeline()
+    PipelineDecorator.run_locally()
+    
+    executing_pipeline("USER": "KUNDAN SINGH")
 
-    print("process completed")
-    print("HELLO KUNDAN EVERYTHING COMPLETED.")
+    print("process completed..")
