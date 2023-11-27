@@ -381,26 +381,6 @@ def inference(rf_model, xgb_model, X_test, y_test):
     #    Logger.current_logger().report_scalar(title="Score", series=row['Name'], value=row['Score'], iteration=index)
     
     
-    import paramiko
-    # SSH connection parameters
-    hostname = "20.231.9.222"
-    username = "rsystems"
-    password = "Rsystems@321"
-    command = "cd clearml-serving/docker && ~/.local/bin/clearml-serving --id '65d4b25ba7e84929b9b5b74fd367d6fc' model auto-update --engine sklearn --endpoint 'crosssell' --preprocess 'preprocess.py' --name 'Upsell_CrossSell_pipeline #7 - RF_model' --max-versions 5"
-    client = paramiko.SSHClient()
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    try:
-        client.connect(hostname, username=username, password=password)
-        stdin, stdout, stderr = client.exec_command(command)
-        print(f"Command: {command}")
-        print(f"Output:\n{stdout.read().decode('utf-8')}")
-        print(f"Errors:\n{stderr.read().decode('utf-8')}")
-
-    finally:
-        # Close the connection
-        client.close()
-        
-        
     
     
     model_list = Model.query_models()
@@ -421,6 +401,29 @@ def inference(rf_model, xgb_model, X_test, y_test):
 
     # Print the name of the latest output model
     #print(latest_output_model_name)
+    
+    
+    
+    import paramiko
+    # SSH connection parameters
+    hostname = "20.231.9.222"
+    username = "rsystems"
+    password = "Rsystems@321"
+    command = "cd clearml-serving/docker && ~/.local/bin/clearml-serving --id '65d4b25ba7e84929b9b5b74fd367d6fc' model auto-update --engine sklearn --endpoint 'crosssell' --preprocess 'preprocess.py' --name 'Upsell_CrossSell_pipeline #7 - RF_model' --max-versions 5"
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    try:
+        client.connect(hostname, username=username, password=password)
+        stdin, stdout, stderr = client.exec_command(command)
+        print(f"Command: {command}")
+        print(f"Output:\n{stdout.read().decode('utf-8')}")
+        print(f"Errors:\n{stderr.read().decode('utf-8')}")
+
+    finally:
+        # Close the connection
+        client.close()
+        
+        
     
 
 
