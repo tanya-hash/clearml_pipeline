@@ -3,7 +3,7 @@ from clearml import PipelineController
 from clearml import TaskTypes
 from clearml.automation.controller import PipelineDecorator
 
-@PipelineDecorator.component(return_values=['dataframe'], cache=False, task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev")
+@PipelineDecorator.component(return_values=['dataframe'], cache=False, task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2")
 def preprocessing():
     import pandas as pd
     import seaborn as sns
@@ -205,7 +205,7 @@ def preprocessing():
 
     return new_df
 
-@PipelineDecorator.component(return_values=["xgb"],cache=False, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev", parents =["preprocessing"])
+@PipelineDecorator.component(return_values=["xgb"],cache=False, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", parents =["preprocessing"])
 def xgboost_train(new_df):
     print("<<<<<<<<<<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>>>>>")
     import pandas as pd
@@ -238,7 +238,7 @@ def xgboost_train(new_df):
     return xgb
 
 
-@PipelineDecorator.component(return_values=['rf_model','X_test','y_test'], cache=False, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev", parents=["preprocessing"])
+@PipelineDecorator.component(return_values=['rf_model','X_test','y_test'], cache=False, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", parents=["preprocessing"])
 def rf_train(new_df):
     print("<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>")
     import pandas as pd
@@ -390,7 +390,6 @@ def inference(rf_model, xgb_model, X_test, y_test):
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>Model names", model_list[-1]._get_model_data().name, model_list[-2]._get_model_data().name, model_list[-3]._get_model_data().name, model_list[-4]._get_model_data().name)
         
 
-    print("NEW PRINT BY KUNDAN SINGH")
     # Create a ClearML task object
     c_task = clearml.Task.get_task()
     # Get the task's output models
@@ -434,8 +433,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
 
 
 @PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", project="demo_pipeline_2", version="0.0.5")
-def executing_pipeline(user_name= "KUNDAN SINGH", mock_parameter="mock", xgb_model=None, rf_model=None):
-    print(mock_parameter)
+def executing_pipeline(user_name= "KUNDAN SINGH"):
 
     # Use the pipeline argument to start the pipeline and pass it ot the first step
     print("<<<<<<<<<launch step one>>>>>>>")
