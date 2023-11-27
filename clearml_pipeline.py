@@ -433,7 +433,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     return accuracy_xgb,accuracy_rf+0.04
 
 
-@PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", project="demo_pipeline_2", version="0.0.5")
+@PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", project="demo_pipeline_2", version="0.0.6")
 def executing_pipeline():
 
     # Use the pipeline argument to start the pipeline and pass it ot the first step
@@ -460,4 +460,4 @@ if __name__ == "__main__":
     
     executing_pipeline()
 
-    print("process completed.")
+    print("process completed by Kundan Singh.")
