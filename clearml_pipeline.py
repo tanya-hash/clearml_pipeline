@@ -390,6 +390,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>Model names", model_list[-1]._get_model_data().name, model_list[-2]._get_model_data().name, model_list[-3]._get_model_data().name, model_list[-4]._get_model_data().name)
         
 
+    print("NEW PRINT BY KUNDAN SINGH")
     # Create a ClearML task object
     c_task = clearml.Task.get_task()
     # Get the task's output models
