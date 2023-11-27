@@ -422,7 +422,8 @@ def inference(rf_model, xgb_model, X_test, y_test):
     finally:
         # Close the connection
         client.close()
-        
+    
+    print(">>>>>>>>>>>>>>>>>>>>>Model deployed.")
         
     
 
@@ -433,7 +434,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
 
 
 @PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", project="demo_pipeline_2", version="0.0.5")
-def executing_pipeline(user_name= "KUNDAN SINGH"):
+def executing_pipeline():
 
     # Use the pipeline argument to start the pipeline and pass it ot the first step
     print("<<<<<<<<<launch step one>>>>>>>")
@@ -457,6 +458,6 @@ if __name__ == "__main__":
     
     PipelineDecorator.run_locally()
     
-    executing_pipeline(user_name= "KUNDAN SINGH")
+    executing_pipeline()
 
-    print("process completed..")
+    print("process completed.")
