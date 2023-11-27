@@ -5,6 +5,7 @@ from clearml.automation.controller import PipelineDecorator
 
 @PipelineDecorator.component(return_values=['dataframe'], cache=False, task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2")
 def preprocessing():
+    print("################################################## first comment")
     import pandas as pd
     import seaborn as sns
     import matplotlib.pyplot as plt
