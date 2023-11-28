@@ -453,7 +453,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     return accuracy_xgb,accuracy_rf+0.04
 
 
-@PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", cache=False, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", project="demo_pipeline_2", version=pipeline_version, pipeline_execution_queue=None)
+@PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", project="demo_pipeline_2", version=pipeline_version, pipeline_execution_queue=None)
 def executing_pipeline():
 
     # Use the pipeline argument to start the pipeline and pass it ot the first step
