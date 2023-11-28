@@ -2,6 +2,9 @@ from clearml import PipelineController
 # import pip_system_certs
 from clearml import TaskTypes
 from clearml.automation.controller import PipelineDecorator
+import datetime
+
+pipeline_version = str(datetime.datetime.now()).replace(" ", "_").split(".")[0].replace(":", "_").replace("-", "_")
 
 # import subprocess
 # def git_pull(repo_url, destination_path):
@@ -17,9 +20,9 @@ from clearml.automation.controller import PipelineDecorator
 
 
 
-@PipelineDecorator.component(return_values=['dataframe'], cache=True, task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2")
+@PipelineDecorator.component(return_values=['dataframe'], cache=False, task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2")
 def preprocessing():
-    print("################################################## first commentsssssss")
+    print("################################################## first comment")
     # git_pull(repository_url, destination_directory)
     
     import pandas as pd
@@ -222,7 +225,7 @@ def preprocessing():
 
     return new_df
 
-@PipelineDecorator.component(return_values=["xgb"],cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", parents =["preprocessing"])
+@PipelineDecorator.component(return_values=["xgb"],cache=False, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", parents =["preprocessing"])
 def xgboost_train(new_df):
     print("<<<<<<<<<<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>>>>>")
     import pandas as pd
@@ -255,7 +258,7 @@ def xgboost_train(new_df):
     return xgb
 
 
-@PipelineDecorator.component(return_values=['rf_model','X_test','y_test'], cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", parents=["preprocessing"])
+@PipelineDecorator.component(return_values=['rf_model','X_test','y_test'], cache=False, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", parents=["preprocessing"])
 def rf_train(new_df):
     print("<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>")
     import pandas as pd
@@ -286,7 +289,7 @@ def rf_train(new_df):
     print("Completed Random Forest")
     return rf_model, X_test, y_test
 
-@PipelineDecorator.component(return_values=["accuracy_xgb","accuracy_rf"], cache=True, task_type=TaskTypes.qc, parents=["xgboost_train","rf_train"])
+@PipelineDecorator.component(return_values=["accuracy_xgb","accuracy_rf"], cache=False, task_type=TaskTypes.qc, parents=["xgboost_train","rf_train"])
 def inference(rf_model, xgb_model, X_test, y_test):
     import pandas as pd
     from sklearn import metrics
@@ -426,7 +429,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     hostname = "20.231.9.222"
     username = "rsystems"
     password = "Rsystems@321"
-    command = "cd clearml-serving/docker && ~/.local/bin/clearml-serving --id '65d4b25ba7e84929b9b5b74fd367d6fc' model auto-update --engine sklearn --endpoint 'crosssell' --preprocess 'preprocess.py' --name 'Upsell_CrossSell_pipeline #7 - RF_model' --max-versions 5"
+    command = "cd clearml-serving/docker && ~/.local/bin/clearml-serving --id '65d4b25ba7e84929b9b5b74fd367d6fc' model auto-update --engine sklearn --endpoint 'crosssell' --preprocess 'preprocess.py' --name 'rf_train - RF_model' --max-versions 5"
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
@@ -450,7 +453,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     return accuracy_xgb,accuracy_rf+0.04
 
 
-@PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", project="demo_pipeline_2", version="0.0.6")
+@PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", cache=False, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", project="demo_pipeline_2", version=pipeline_version, pipeline_execution_queue=None)
 def executing_pipeline():
 
     # Use the pipeline argument to start the pipeline and pass it ot the first step
@@ -469,6 +472,7 @@ def executing_pipeline():
 
 if __name__ == "__main__":
     # set the pipeline steps default execution queue (per specific step we can override it with the decorator)
+    pipeline_version = str(datetime.datetime.now()).replace(" ", "_").split(".")[0].replace(":", "_").replace("-", "_")
     PipelineDecorator.set_default_execution_queue('clearml-demo')
     
     PipelineDecorator.debug_pipeline()
@@ -477,4 +481,4 @@ if __name__ == "__main__":
     
     executing_pipeline()
 
-    print("process completed by Kundan Singh....")
+    print("process completed.")
