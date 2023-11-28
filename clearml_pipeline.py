@@ -429,13 +429,19 @@ def inference(rf_model, xgb_model, X_test, y_test):
     hostname = "20.231.9.222"
     username = "rsystems"
     password = "Rsystems@321"
-    command = "cd clearml-serving/docker && ~/.local/bin/clearml-serving --id '65d4b25ba7e84929b9b5b74fd367d6fc' model auto-update --engine sklearn --endpoint 'crosssell' --preprocess 'preprocess.py' --name 'rf_train - RF_model' --max-versions 5"
+    command_remove = "cd clearml-serving/docker && ~/.local/bin/clearml-serving --id '65d4b25ba7e84929b9b5b74fd367d6fc' model remove --endpoint 'crosssell'"
+    command_add = "cd clearml-serving/docker && ~/.local/bin/clearml-serving --id '65d4b25ba7e84929b9b5b74fd367d6fc' model add --engine sklearn --endpoint 'crosssell' --preprocess 'preprocess.py' --name 'rf_train - RF_model'"
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
         client.connect(hostname, username=username, password=password)
-        stdin, stdout, stderr = client.exec_command(command)
-        print(f"Command: {command}")
+        stdin, stdout, stderr = client.exec_command(command_remove)
+        print(f"Command: {command_remove}")
+        print(f"Output:\n{stdout.read().decode('utf-8')}")
+        print(f"Errors:\n{stderr.read().decode('utf-8')}")
+        
+        stdin, stdout, stderr = client.exec_command(command_add)
+        print(f"Command: {command_add}")
         print(f"Output:\n{stdout.read().decode('utf-8')}")
         print(f"Errors:\n{stderr.read().decode('utf-8')}")
 
@@ -443,7 +449,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
         # Close the connection
         client.close()
     
-    print(">>>>>>>>>>>>>>>>>>>>>Model deployed.")
+    print(">>>>>>>>>>>>>>>>>>>>>Model deployed by Kundan Singh.")
         
     
 
