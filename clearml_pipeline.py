@@ -459,11 +459,23 @@ def inference(rf_model, xgb_model, X_test, y_test):
     return accuracy_xgb,accuracy_rf+0.04
 
 
-@PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", project="demo_pipeline_2", version=pipeline_version, pipeline_execution_queue=None)
+@PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", project="demo_pipeline_2", version=pipeline_version, pipeline_execution_queue='clearml-demo')
 def executing_pipeline():
 
+    git_step = PipelineDecorator.step(
+        name="Git Pull",
+        description="Pull the latest git repo",
+        command="git pull origin https://github.com/tanya-hash/clearml_pipeline.git",
+    )
+    pipeline = PipelineDecorator.pipeline()
+    pipeline.add_step(git_step)
+
+    # Run the pipeline
+    pipeline.run()
+    print(">>>>>>>>>>>>>>>>>>>>>># Run the pipeline")
+
     # Use the pipeline argument to start the pipeline and pass it ot the first step
-    print("<<<<<<<<<launch step one>>>>>>>")
+    print("<<<<<<<<<launch step one>>>>>>> ###################")
     new_df = preprocessing()
     
     print("<<<<<<<<<<launch step two>>>>>>>>>>")
@@ -487,4 +499,4 @@ if __name__ == "__main__":
     
     executing_pipeline()
 
-    print("process completed.")
+    print("process completed.....")
