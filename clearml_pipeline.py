@@ -4,7 +4,7 @@ from clearml import TaskTypes
 from clearml.automation.controller import PipelineDecorator
 import datetime
 
-pipeline_version = str(datetime.datetime.now()).replace(" ", "_").split(".")[0].replace(":", "_").replace("-", "_")
+pipeline_version = str(datetime.datetime.now()).split(".")[0].replace(":", ".").replace("-", ".").replace(" ", ".")
 
 # import subprocess
 # def git_pull(repo_url, destination_path):
@@ -472,7 +472,7 @@ def executing_pipeline():
 
 if __name__ == "__main__":
     # set the pipeline steps default execution queue (per specific step we can override it with the decorator)
-    pipeline_version = str(datetime.datetime.now()).replace(" ", "_").split(".")[0].replace(":", "_").replace("-", "_")
+    pipeline_version = str(datetime.datetime.now()).split(".")[0].replace(":", ".").replace("-", ".").replace(" ", ".")
     PipelineDecorator.set_default_execution_queue('clearml-demo')
     
     PipelineDecorator.debug_pipeline()
