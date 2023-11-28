@@ -3,9 +3,9 @@ from clearml import PipelineController
 from clearml import TaskTypes
 from clearml.automation.controller import PipelineDecorator
 
-@PipelineDecorator.component(return_values=['dataframe'], cache=False, task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2")
+@PipelineDecorator.component(return_values=['dataframe'], cache=True, task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2")
 def preprocessing():
-    print("################################################## first comment")
+    print("################################################## first commentsssssss")
     import pandas as pd
     import seaborn as sns
     import matplotlib.pyplot as plt
@@ -206,7 +206,7 @@ def preprocessing():
 
     return new_df
 
-@PipelineDecorator.component(return_values=["xgb"],cache=False, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", parents =["preprocessing"])
+@PipelineDecorator.component(return_values=["xgb"],cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", parents =["preprocessing"])
 def xgboost_train(new_df):
     print("<<<<<<<<<<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>>>>>")
     import pandas as pd
@@ -239,7 +239,7 @@ def xgboost_train(new_df):
     return xgb
 
 
-@PipelineDecorator.component(return_values=['rf_model','X_test','y_test'], cache=False, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", parents=["preprocessing"])
+@PipelineDecorator.component(return_values=['rf_model','X_test','y_test'], cache=True, task_type=TaskTypes.training, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", parents=["preprocessing"])
 def rf_train(new_df):
     print("<<<<<<<<<<<Importing Modules>>>>>>>>>>>>>")
     import pandas as pd
@@ -270,7 +270,7 @@ def rf_train(new_df):
     print("Completed Random Forest")
     return rf_model, X_test, y_test
 
-@PipelineDecorator.component(return_values=["accuracy_xgb","accuracy_rf"], cache=False, task_type=TaskTypes.qc, parents=["xgboost_train","rf_train"])
+@PipelineDecorator.component(return_values=["accuracy_xgb","accuracy_rf"], cache=True, task_type=TaskTypes.qc, parents=["xgboost_train","rf_train"])
 def inference(rf_model, xgb_model, X_test, y_test):
     import pandas as pd
     from sklearn import metrics
@@ -438,7 +438,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
 def executing_pipeline():
 
     # Use the pipeline argument to start the pipeline and pass it ot the first step
-    print("<<<<<<<<<launch step one>>>>>>>")
+    print("<<<<<<<<<launch step one>>>>>>> ##################")
     new_df = preprocessing()
     
     print("<<<<<<<<<<launch step two>>>>>>>>>>")
@@ -461,4 +461,4 @@ if __name__ == "__main__":
     
     executing_pipeline()
 
-    print("process completed by Kundan Singh.")
+    print("process completed by Kundan Singh....")
