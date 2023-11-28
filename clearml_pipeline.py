@@ -3,9 +3,25 @@ from clearml import PipelineController
 from clearml import TaskTypes
 from clearml.automation.controller import PipelineDecorator
 
+# import subprocess
+# def git_pull(repo_url, destination_path):
+    # try:
+        # subprocess.run(['git', 'init'], cwd=destination_path, check=True)
+        # subprocess.run(['git', 'remote', 'add', 'origin', repo_url], cwd=destination_path, check=True)
+        # subprocess.run(['git', 'pull', 'origin', 'dev_2'], cwd=destination_path, check=True)
+        # print("Git pull successful.")
+    # except subprocess.CalledProcessError as e:
+        # print(f"Error during Git pull: {e}")
+# repository_url = "https://github.com/tanya-hash/clearml_pipeline.git"
+# destination_directory = "/"
+
+
+
 @PipelineDecorator.component(return_values=['dataframe'], cache=True, task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2")
 def preprocessing():
     print("################################################## first commentsssssss")
+    # git_pull(repository_url, destination_directory)
+    
     import pandas as pd
     import seaborn as sns
     import matplotlib.pyplot as plt
@@ -434,11 +450,11 @@ def inference(rf_model, xgb_model, X_test, y_test):
     return accuracy_xgb,accuracy_rf+0.04
 
 
-@PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", project="demo_pipeline_2", version="0.0.6")
+@PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", project="demo_pipeline_2", version="0.0.6")
 def executing_pipeline():
 
     # Use the pipeline argument to start the pipeline and pass it ot the first step
-    print("<<<<<<<<<launch step one>>>>>>> ##################")
+    print("<<<<<<<<<launch step one>>>>>>>")
     new_df = preprocessing()
     
     print("<<<<<<<<<<launch step two>>>>>>>>>>")
