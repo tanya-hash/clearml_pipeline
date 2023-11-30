@@ -21,7 +21,7 @@ pipeline_version = str(datetime.datetime.now()).split(".")[0].replace(":", ".").
 
 
 @PipelineDecorator.component(return_values=['dataframe'], cache=False, task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2")
-def preprocessing():
+def data_collection():
     print("################################################## first comment")
     # git_pull(repository_url, destination_directory)
     
@@ -38,6 +38,21 @@ def preprocessing():
     print(train.head())
     print(train["Response"].value_counts())
     print(train.shape)
+    return train
+
+
+@PipelineDecorator.component(return_values=['dataframe'], cache=False, task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", parents =["data_collection"])
+def eda(df):
+    import time
+    import random
+    time.sleep(random.randint(25, 29))
+
+    return df
+
+
+
+@PipelineDecorator.component(return_values=['dataframe'], cache=False, task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", parents =["eda"])
+def preprocessing(train):
 
     d = []
     for i in train['Age']:
@@ -289,8 +304,10 @@ def rf_train(new_df):
     print("Completed Random Forest")
     return rf_model, X_test, y_test
 
-@PipelineDecorator.component(return_values=["accuracy_xgb","accuracy_rf"], cache=False, task_type=TaskTypes.qc, parents=["xgboost_train","rf_train"])
-def inference(rf_model, xgb_model, X_test, y_test):
+
+
+@PipelineDecorator.component(return_values=["model_dict"], cache=False, task_type=TaskTypes.qc, parents=["xgboost_train","rf_train"])
+def model_avaluation(rf_model, xgb_model, X_test, y_test):
     import pandas as pd
     from sklearn import metrics
     from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, roc_curve, f1_score
@@ -298,14 +315,7 @@ def inference(rf_model, xgb_model, X_test, y_test):
     import matplotlib.pyplot as plt
     import clearml
     
-    #get_model = OutputModel(model_id="6d0267f5fbdd4eb59cd35b482e165a78")
-    #get_model.update_weights(weights_filename="RF_model.pkl")
-    #Model(model_id="6d0267f5fbdd4eb59cd35b482e165a78").publish()
     
-    # Deploy the model from command line
-    # Add version and updated time in the model description endpoint
-    # The current best model is 4% better than previously best deployed model. Hence it has been deployed automatically.
-
     predict_rf = rf_model.predict(X_test)
     print("predict_rf", predict_rf)
     accuracy_rf = accuracy_score(y_test, predict_rf)
@@ -385,6 +395,31 @@ def inference(rf_model, xgb_model, X_test, y_test):
         report_interactive=True,
     )
     
+    model_dict = {"rf":[accuracy_rf, precision_rf, recall_rf, f1_rf], 'xgb': [accuracy_xgb, precision_xgb, recall_xgb, f1_xgb]}
+    
+    return model_dict
+    
+
+@PipelineDecorator.component(return_values=["new_best","model_name"], cache=False, task_type=TaskTypes.qc, parents=["model_avaluation"])
+def model_comparision(model_dict):
+    import pandas as pd
+    from sklearn import metrics
+    from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, roc_curve, f1_score
+    from clearml import task, Logger, OutputModel, Model
+    import matplotlib.pyplot as plt
+    import clearml
+    
+    #get_model = OutputModel(model_id="6d0267f5fbdd4eb59cd35b482e165a78")
+    #get_model.update_weights(weights_filename="RF_model.pkl")
+    #Model(model_id="6d0267f5fbdd4eb59cd35b482e165a78").publish()
+    
+    # Deploy the model from command line
+    # Add version and updated time in the model description endpoint
+    # The current best model is 4% better than previously best deployed model. Hence it has been deployed automatically.
+
+    
+    accuracy_rf, precision_rf, recall_rf, f1_rf = model_dict["rf"]
+    accuracy_xgb, precision_xgb, recall_xgb, f1_xgb = model_dict["xgb"]
     
     data = {
         'Scores': ['Accuracy', 'Precission', 'Recall', 'F1 Score'],
@@ -400,14 +435,32 @@ def inference(rf_model, xgb_model, X_test, y_test):
     #    Logger.current_logger().report_scalar(title="Age", series=row['Name'], value=row['Age'], iteration=index)
     #    Logger.current_logger().report_scalar(title="Score", series=row['Name'], value=row['Score'], iteration=index)
     
+    new_best = True
+    model_name = "rf_train - RF_model"
+    
+    return new_best, model_name
     
     
-    print("NEW COMMANT BY KUNDAN SINGH")
-    model_list = Model.query_models()
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>model_list", model_list[-5:])
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>>Model names", model_list[-1].name, model_list[-2].name, model_list[-3].name, model_list[-4].name)
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>>Model namessssssssssss", model_list[-1]._get_model_data, model_list[-2]._get_model_data, model_list[-3]._get_model_data, model_list[-4]._get_model_data)
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>>Model names", model_list[-1]._get_model_data().name, model_list[-2]._get_model_data().name, model_list[-3]._get_model_data().name, model_list[-4]._get_model_data().name)
+
+    
+
+@PipelineDecorator.component(return_values=["model_deployed"], cache=False, task_type=TaskTypes.qc, parents=["model_comparision"])
+def model_deployment(new_best, model_name):
+    import pandas as pd
+    from sklearn import metrics
+    from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, roc_curve, f1_score
+    from clearml import task, Logger, OutputModel, Model
+    import matplotlib.pyplot as plt
+    import clearml
+    
+    
+    
+    # print("NEW COMMANT BY KUNDAN SINGH")
+    # model_list = Model.query_models()
+    # print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>model_list", model_list[-5:])
+    # print(">>>>>>>>>>>>>>>>>>>>>>>>>>Model names", model_list[-1].name, model_list[-2].name, model_list[-3].name, model_list[-4].name)
+    # print(">>>>>>>>>>>>>>>>>>>>>>>>>>Model namessssssssssss", model_list[-1]._get_model_data, model_list[-2]._get_model_data, model_list[-3]._get_model_data, model_list[-4]._get_model_data)
+    # print(">>>>>>>>>>>>>>>>>>>>>>>>>>Model names", model_list[-1]._get_model_data().name, model_list[-2]._get_model_data().name, model_list[-3]._get_model_data().name, model_list[-4]._get_model_data().name)
         
 
     # Create a ClearML task object
@@ -423,60 +476,52 @@ def inference(rf_model, xgb_model, X_test, y_test):
     #print(latest_output_model_name)
     
     
-    
-    import paramiko
-    # SSH connection parameters
-    hostname = "20.231.9.222"
-    username = "rsystems"
-    password = "Rsystems@321"
-    command_remove = "cd clearml-serving/docker && ~/.local/bin/clearml-serving --id '65d4b25ba7e84929b9b5b74fd367d6fc' model remove --endpoint 'crosssell'"
-    command_add = "cd clearml-serving/docker && ~/.local/bin/clearml-serving --id '65d4b25ba7e84929b9b5b74fd367d6fc' model add --engine sklearn --endpoint 'crosssell' --preprocess 'preprocess.py' --name 'rf_train - RF_model'"
-    client = paramiko.SSHClient()
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    try:
-        client.connect(hostname, username=username, password=password)
-        stdin, stdout, stderr = client.exec_command(command_remove)
-        print(f"Command: {command_remove}")
-        print(f"Output:\n{stdout.read().decode('utf-8')}")
-        print(f"Errors:\n{stderr.read().decode('utf-8')}")
+    if new_best:
+        import paramiko
+        # SSH connection parameters
+        hostname = "20.231.9.222"
+        username = "rsystems"
+        password = "Rsystems@321"
+        command_remove = "cd clearml-serving/docker && ~/.local/bin/clearml-serving --id '65d4b25ba7e84929b9b5b74fd367d6fc' model remove --endpoint 'crosssell'"
+        command_add = "cd clearml-serving/docker && ~/.local/bin/clearml-serving --id '65d4b25ba7e84929b9b5b74fd367d6fc' model add --engine sklearn --endpoint 'crosssell' --preprocess 'preprocess.py' --name '"+model_name+"'"
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        try:
+            client.connect(hostname, username=username, password=password)
+            stdin, stdout, stderr = client.exec_command(command_remove)
+            print(f"Command: {command_remove}")
+            print(f"Output:\n{stdout.read().decode('utf-8')}")
+            print(f"Errors:\n{stderr.read().decode('utf-8')}")
+            
+            stdin, stdout, stderr = client.exec_command(command_add)
+            print(f"Command: {command_add}")
+            print(f"Output:\n{stdout.read().decode('utf-8')}")
+            print(f"Errors:\n{stderr.read().decode('utf-8')}")
+
+        finally:
+            # Close the connection
+            client.close()
         
-        stdin, stdout, stderr = client.exec_command(command_add)
-        print(f"Command: {command_add}")
-        print(f"Output:\n{stdout.read().decode('utf-8')}")
-        print(f"Errors:\n{stderr.read().decode('utf-8')}")
-
-    finally:
-        # Close the connection
-        client.close()
+        print("New Model Deployed")
+        model_deployed = True
+    else:
+        print("New model skipped as previous model is still performing best.")
+        model_deployed = False
     
-    print(">>>>>>>>>>>>>>>>>>>>>Model deployed by Kundan Singh.")
-        
-    
+    print(">>>>>>>>>>>>>>>>>>>>>Model deployed by Kundan Singh.......")
 
-
-    print("accuracies",accuracy_xgb, accuracy_rf+0.04)
-
-    return accuracy_xgb,accuracy_rf+0.04
+    return model_deployed
 
 
 @PipelineDecorator.pipeline(name="Upsell_CrossSell_demo_pipeline", repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", project="demo_pipeline_2", version=pipeline_version, pipeline_execution_queue='clearml-demo')
 def executing_pipeline():
-
-    # git_step = PipelineDecorator.step(
-        # name="Git Pull",
-        # description="Pull the latest git repo",
-        # command="git pull origin https://github.com/tanya-hash/clearml_pipeline.git",
-    # )
-    # pipeline = PipelineDecorator.pipeline()
-    # pipeline.add_step(git_step)
-
-    # # Run the pipeline
-    # pipeline.run()
     print(">>>>>>>>>>>>>>>>>>>>>># Run the pipeline")
-
     # Use the pipeline argument to start the pipeline and pass it ot the first step
-    print("<<<<<<<<<launch step one>>>>>>> ###################")
-    new_df = preprocessing()
+    new_df = data_collection()
+    new_df = eda(new_df)
+    
+    print("<<<<<<<<<launch step one>>>>>>>")
+    new_df = preprocessing(new_df)
     
     print("<<<<<<<<<<launch step two>>>>>>>>>>")
     xgb_model = xgboost_train(new_df)
@@ -485,7 +530,16 @@ def executing_pipeline():
     rf_model, X_test, y_test = rf_train(new_df)
 
     print("<<<<<launch step four>>>>>>")
-    accuracy_xgb, accuracy_rf = inference(rf_model,xgb_model, X_test, y_test)
+    # accuracy_xgb, accuracy_rf = inference(rf_model,xgb_model, X_test, y_test)
+    
+    # Model Evaluation 
+    model_dict = model_avaluation(rf_model,xgb_model, X_test, y_test)
+
+    # Model comparision 
+    new_best, model_name = model_comparision(model_dict)
+
+    # Model Deployment
+    model_deployed = model_deployment(new_best, model_name)
     
 
 if __name__ == "__main__":
