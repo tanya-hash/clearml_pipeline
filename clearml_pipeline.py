@@ -42,18 +42,22 @@ def data_collection():
 
 
 @PipelineDecorator.component(return_values=['dataframe'], cache=False, task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", parents =["data_collection"])
-def eda(df):
+def eda(new_df):
     import time
     import random
     time.sleep(random.randint(25, 29))
 
-    return df
+    return new_df
 
 
 
 @PipelineDecorator.component(return_values=['dataframe'], cache=False, task_type=TaskTypes.data_processing, repo="https://github.com/tanya-hash/clearml_pipeline.git", repo_branch="dev_2", parents =["eda"])
 def preprocessing(train):
-
+    import pandas as pd
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    from clearml import task, Logger
+    
     d = []
     for i in train['Age']:
         if i >= 20 and i <= 32:
